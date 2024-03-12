@@ -4,7 +4,7 @@
 #define PI 3.14159265f
 
 // Global variables
-char title[] = "Full-Screen & Windowed Mode";  // Windowed mode's title
+char title[] = "A Beautiful Sunday";  // Windowed mode's title
 int windowWidth = 640;     // Windowed mode's width
 int windowHeight = 480;     // Windowed mode's height
 int windowPosX = 50;      // Windowed mode's top-left corner x
@@ -20,7 +20,7 @@ float scale = 1;
 //cloud properties
 float bx = 0;
 
-bool fullScreenMode = true; // Full-screen or windowed mode?
+bool fullScreenMode = false; // Full-screen or windowed mode?
 
 /* Draws a circle */
 void drawCircle(float x, float y, float radius, int numSegments) {
@@ -36,14 +36,14 @@ void drawCircle(float x, float y, float radius, int numSegments) {
 
 /* Initialize OpenGL Graphics */
 void initGL() {
-	glClearColor(0.0, 0.0, 0.0, 1.0); // Set background (clear) color to black
+    glClearColor(0.0, 0.0, 0.0, 1.0); // Set background (clear) color to black
 }
 
 /* Callback handler for window re-paint event */
 void display() {
-	glClear(GL_COLOR_BUFFER_BIT);  // Clear the color buffer
-	glMatrixMode(GL_MODELVIEW);    // To operate on the model-view matrix
-	glLoadIdentity();              // Reset model-view matrix
+    glClear(GL_COLOR_BUFFER_BIT);  // Clear the color buffer
+    glMatrixMode(GL_MODELVIEW);    // To operate on the model-view matrix
+    glLoadIdentity();              // Reset model-view matrix
 
     //sky
     glBegin(GL_QUADS);
@@ -215,7 +215,7 @@ void display() {
     glVertex2f(0.03f, 0.02f);
     glVertex2f(0.03f, 0.04f);
     glEnd();
-    
+
     //rooftop
     glColor3ub(188, 74, 60);
     glBegin(GL_QUADS);
@@ -248,7 +248,7 @@ void display() {
     drawCircle(0.8f, 0.73f, 0.1f, 100);
     drawCircle(0.7f, 0.8f, 0.1f, 100);
     drawCircle(0.6f, 0.77f, 0.1f, 100);
-    
+
     bx += 0.01f;
     if (bx > 2.0f)
         bx = -2.0f;
@@ -415,8 +415,8 @@ void display() {
     glVertex2f(0.07f, -0.68f);
     glVertex2f(0.07f, -0.66f);
     glEnd();
-    
-    //
+
+    //car upper
     glColor3ub(128, 113, 83);
     glBegin(GL_POLYGON);
     glVertex2f(-0.1f, -0.45f);
@@ -457,38 +457,38 @@ void display() {
 
 /* Call back when the windows is re-sized */
 void reshape(GLsizei width, GLsizei height) {
-	// Compute aspect ratio of the new window
-	if (height == 0) height = 1;                // To prevent divide by 0
-	GLfloat aspect = (GLfloat)width / (GLfloat)height;
+    // Compute aspect ratio of the new window
+    if (height == 0) height = 1;                // To prevent divide by 0
+    GLfloat aspect = (GLfloat)width / (GLfloat)height;
 
-	// Set the viewport to cover the new window
-	glViewport(0, 0, width, height);
+    // Set the viewport to cover the new window
+    glViewport(0, 0, width, height);
 
-	// Set the aspect ratio of the clipping area to match the viewport
-	glMatrixMode(GL_PROJECTION);  // To operate on the Projection matrix
-	glLoadIdentity();             // Reset the projection matrix
-	if (width >= height) {
-		clipAreaXLeft = -1.0 * aspect;
-		clipAreaXRight = 1.0 * aspect;
-		clipAreaYBottom = -1.0;
-		clipAreaYTop = 1.0;
-	}
-	else {
-		clipAreaXLeft = -1.0;
-		clipAreaXRight = 1.0;
-		clipAreaYBottom = -1.0 / aspect;
-		clipAreaYTop = 1.0 / aspect;
-	}
-	gluOrtho2D(clipAreaXLeft, clipAreaXRight, clipAreaYBottom, clipAreaYTop);
+    // Set the aspect ratio of the clipping area to match the viewport
+    glMatrixMode(GL_PROJECTION);  // To operate on the Projection matrix
+    glLoadIdentity();             // Reset the projection matrix
+    if (width >= height) {
+        clipAreaXLeft = -1.0 * aspect;
+        clipAreaXRight = 1.0 * aspect;
+        clipAreaYBottom = -1.0;
+        clipAreaYTop = 1.0;
+    }
+    else {
+        clipAreaXLeft = -1.0;
+        clipAreaXRight = 1.0;
+        clipAreaYBottom = -1.0 / aspect;
+        clipAreaYTop = 1.0 / aspect;
+    }
+    gluOrtho2D(clipAreaXLeft, clipAreaXRight, clipAreaYBottom, clipAreaYTop);
 }
 
 /* Callback handler for normal-key event */
 void keyboard(unsigned char key, int x, int y) {
-	switch (key) {
-	case 27:     // ESC key
-		exit(0);
-		break;
-	}
+    switch (key) {
+    case 27:     // ESC key
+        exit(0);
+        break;
+    }
 }
 
 /* Callback handler for special-key event */
@@ -515,7 +515,7 @@ void specialKeys(int key, int x, int y) {
             scale -= 0.1f;
             glutPostRedisplay(); // Trigger a redraw to update the car's position and scale
         }
-       
+
         break;
 
     case GLUT_KEY_DOWN:
@@ -531,16 +531,16 @@ void specialKeys(int key, int x, int y) {
 
 /* Main function: GLUT runs as a console application starting at main() */
 int main(int argc, char** argv) {
-	glutInit(&argc, argv);            // Initialize GLUT
-	glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
-	glutInitWindowSize(windowWidth, windowHeight);  // Initial window width and height
-	glutInitWindowPosition(windowPosX, windowPosY); // Initial window top-left corner (x, y)
-	glutCreateWindow(title);      // Create window with given title
-	glutDisplayFunc(display);     // Register callback handler for window re-paint
-	glutReshapeFunc(reshape);     // Register callback handler for window re-shape
-	glutSpecialFunc(specialKeys); // Register callback handler for special-key event
-	glutKeyboardFunc(keyboard);   // Register callback handler for special-key event
-	initGL();                     // Our own OpenGL initialization
-	glutMainLoop();               // Enter event-processing loop
-	return 0;
+    glutInit(&argc, argv);            // Initialize GLUT
+    glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
+    glutInitWindowSize(windowWidth, windowHeight);  // Initial window width and height
+    glutInitWindowPosition(windowPosX, windowPosY); // Initial window top-left corner (x, y)
+    glutCreateWindow(title);      // Create window with given title
+    glutDisplayFunc(display);     // Register callback handler for window re-paint
+    glutReshapeFunc(reshape);     // Register callback handler for window re-shape
+    glutSpecialFunc(specialKeys); // Register callback handler for special-key event
+    glutKeyboardFunc(keyboard);   // Register callback handler for special-key event
+    initGL();                     // Our own OpenGL initialization
+    glutMainLoop();               // Enter event-processing loop
+    return 0;
 }
